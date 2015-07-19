@@ -1,0 +1,61 @@
+#!/bin/bash
+. ./lib
+
+options=()
+options+=("Minimal" "/home #")
+options+=("User" "user:/home #")
+options+=("User and Hostname" "user@hostname:/home #")
+
+sel=$(whiptail --backtitle "$apptitle" --title "Bash PS Configuration :" --menu "" --cancel-button "Back" 0 0 0 \
+  "${options[@]}" \
+  3>&1 1>&2 2>&3)
+if [ ! "$?" = "0" ]; then
+  exit 1
+fi
+
+
+updateps1(){
+  case $1 in
+    'Minimal') 
+      cat > /etc/profile.d/ps1.sh << "EOF"
+#!/bin/bash
+clrreset='\e[0m'
+clrwhite='\e[1;37m'
+clrgreen='\e[1;32m'
+clrred='\e[1;31m'
+export PS1="\[$clrwhite\]\w \`if [ \$? = 0 ]; then echo -e '\[$clrgreen\]'; else echo -e '\[$clrred\]'; fi\`\\$ \[$clrreset\]"
+EOF
+      chmod 755 /etc/profile.d/ps1.sh
+    ;;
+    'User') 
+      cat > /etc/profile.d/ps1.sh << "EOF"
+#!/bin/bash
+clrreset='\e[0m'
+clrwhite='\e[1;37m'
+clrgreen='\e[1;32m'
+clrred='\e[1;31m'
+export PS1="\[$clrwhite\]$USER:\w \`if [ \$? = 0 ]; then echo -e '\[$clrgreen\]'; else echo -e '\[$clrred\]'; fi\`\\$ \[$clrreset\]"
+EOF
+      chmod 755 /etc/profile.d/alias.sh
+    ;;
+    'User and Hostname') 
+      cat > /etc/profile.d/ps1.sh << "EOF"
+#!/bin/bash
+clrreset='\e[0m'
+clrwhite='\e[1;37m'
+clrgreen='\e[1;32m'
+clrred='\e[1;31m'
+export PS1="\[$clrwhite\]$USER@$HOSTNAME:\w \`if [ \$? = 0 ]; then echo -e '\[$clrgreen\]'; else echo -e '\[$clrred\]'; fi\`\\$ \[$clrreset\]"
+EOF
+      chmod 755 /etc/profile.d/alias.sh
+    ;;
+  esac
+}
+
+if ( confirm "Create /etc/profile.d/ps1.sh and force load it at end of /etc/bash.bashrc ?" ) then
+  updateps1 $sel
+  grep -q -F 'source /etc/profile.d/ps1.sh' /etc/bash.bashrc || echo 'source /etc/profile.d/ps1.sh' >> /etc/bash.bashrc
+fi
+
+exit 0
+

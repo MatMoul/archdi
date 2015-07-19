@@ -1,0 +1,28 @@
+#!/bin/bash
+. ./lib
+
+options=()
+options+=("Reboot" "")
+options+=("Shutdown" "")
+
+sel=$(whiptail --backtitle "$apptitle" --title "Shutdown Menu :" --menu "" --cancel-button "Back" 0 0 0 \
+  "${options[@]}" \
+  3>&1 1>&2 2>&3)
+if [ ! "$?" = "0" ]; then
+  exit 1
+fi
+
+case $sel in
+  Reboot)
+    if (confirm "Reboot now ?" --defaultno) then
+      reboot
+    fi
+  ;;
+  Shutdown)
+    if (confirm "Shutdown now ?" --defaultno) then
+      shutdown now
+    fi
+  ;;
+esac
+
+exit 0

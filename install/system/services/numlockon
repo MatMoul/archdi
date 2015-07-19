@@ -1,0 +1,18 @@
+#!/bin/bash
+. ./lib
+
+if (confirm "numlockon is a custom service created by this script.\nIt call ""setleds -D +num"" on tty1 to tty6.\n\nCreate /etc/systemd/system/numlockon.service ?") then
+  cat > /etc/systemd/system/numlockon.service << "EOF"
+[Unit]
+Description=Switch on numlock from tty1 to tty6
+
+[Service]
+ExecStart=/bin/bash -c 'for tty in /dev/tty{1..6};do /usr/bin/setleds -D +num < \"$tty\";done'
+
+[Install]
+WantedBy=multi-user.target
+EOF
+  svcenable numlockon
+fi
+
+exit 0

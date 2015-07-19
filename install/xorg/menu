@@ -1,0 +1,28 @@
+#!/bin/bash
+. ./lib
+
+options=()
+options+=("Install" "")
+options+=("Fonts" "")
+options+=("Input Drivers" "")
+options+=("Video Drivers" "")
+#options+=("Complements" "")
+
+defaultitem=""
+sel=$(whiptail --backtitle "$apptitle" --title "XOrg Install Menu" --menu "" --default-item "$defaultitem" --cancel-button "Back" 0 0 0 \
+  "${options[@]}" \
+  3>&1 1>&2 2>&3)
+if [ ! "$?" = "0" ]; then
+  exit 1
+fi
+sed -i "/^defaultitem=/c\defaultitem=\"$sel\"" $0
+
+case $sel in
+  'Install') script install/xorg/install;;
+  'Fonts') menu install/xorg/fonts/menu;;
+  'Input Drivers') script install/xorg/input-drivers/input-drivers;;
+  'Video Drivers') script install/xorg/video-drivers/video-drivers;;
+  'Complements') script install/xorg/complements/complements;;
+esac
+
+exit 0

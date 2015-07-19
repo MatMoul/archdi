@@ -1,0 +1,26 @@
+#!/bin/bash
+. ./lib
+
+options=()
+options+=("Services" "")
+options+=("File System" "")
+options+=("Sound" "")
+options+=("Print" "")
+
+defaultitem=""
+sel=$(whiptail --backtitle "$apptitle" --title "System Install Menu :" --menu "" --default-item "$defaultitem" --cancel-button "Back" 0 0 0 \
+  "${options[@]}" \
+  3>&1 1>&2 2>&3)
+if [ ! "$?" = "0" ]; then
+  exit 1
+fi
+sed -i "/^defaultitem=/c\defaultitem=\"$sel\"" $0
+
+case $sel in
+  'Services') script install/system/services/menu;;
+  'File System') script install/system/filesystem;;
+  'Sound') script install/system/sound/sound;;
+  'Print') script install/system/print;;
+esac
+
+exit 0

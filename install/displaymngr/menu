@@ -1,0 +1,53 @@
+#!/bin/bash
+. ./lib
+
+options=()
+options+=("kdm" "KDE Login")
+options+=("gdm" "Gnome Login")
+options+=("sddm" "QT5 Login")
+options+=("lxdm" "LXDE Login")
+options+=("lightdm-gtk-greeter" "Other Login")
+#options+=("lightdm-kde-greeter" "Other Login")
+options+=("slim" "Other Login")
+
+defaultitem=""
+sel=$(whiptail --backtitle "$apptitle" --title "Install Display Manager Menu :" --menu "" --default-item "$defaultitem" --cancel-button "Back" 0 0 0 \
+  "${options[@]}" \
+  3>&1 1>&2 2>&3)
+if [ ! "$?" = "0" ]; then
+  exit 1
+fi
+sed -i "/^defaultitem=/c\defaultitem=\"$sel\"" $0
+
+case $sel in
+  "kdm")
+    instpkg kdebase-workspace
+    svcenable kdm
+  ;;
+  "gdm")
+    instpkg gdm
+    svcenable gdm
+  ;;
+  "sddm")
+    instpkg sddm
+    svcenable sddm
+  ;;
+  "lxdm")
+    instpkg lxdm
+    svcenable lxdm
+  ;;
+  "lightdm-gtk-greeter")
+    instpkg lightdm-gtk-greeter
+    svcenable lightdm
+  ;;
+  "lightdm-kde-greeter")
+    instpkg lightdm-kde-greeter
+    svcenable lightdm
+  ;;
+  "slim")
+    instpkg slim
+    svcenable slim
+  ;;
+esac
+
+exit 0

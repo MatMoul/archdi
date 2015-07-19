@@ -1,0 +1,26 @@
+#!/bin/bash
+. ./lib
+
+options=()
+
+package=""
+items=$(pacman -Sqg $package)
+for item in $items; do
+  options+=("$item" "" on)
+done
+
+sel=$(whiptail --backtitle "$apptitle" --title "$package Install :" --checklist "" --cancel-button "Back" 0 0 0 \
+  "${options[@]}" \
+  3>&1 1>&2 2>&3)
+
+if [ ! "$?" = "0" ]; then
+  exit 1
+fi
+
+for itm in $sel; do
+  pkg="$pkg $(echo $itm | sed 's/"//g')"
+done
+
+instpkg "$pkg" "$aurpkg"
+
+exit 0

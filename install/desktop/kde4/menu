@@ -1,0 +1,43 @@
+#!/bin/bash
+. ./lib
+
+options=()
+options+=("KDE Base" "kdebase-workspace")
+options+=("KDE Localisations" "kde-l10n-")
+options+=("KDE Plasma" "kdeplasma4-")
+options+=("KDE Apps Meta Full" "kde-applications-meta")
+options+=("KDE Apps Full" "kde-applications")
+options+=("KDE Apps" "")
+options+=("KDE Complements" "")
+
+defaultitem=""
+sel=$(whiptail --backtitle "$apptitle" --title "KDE4 Install Menu :" --menu "" --default-item "$defaultitem" --cancel-button "Back" 0 0 0 \
+  "${options[@]}" \
+  3>&1 1>&2 2>&3)
+if [ ! "$?" = "0" ]; then
+  exit 1
+fi
+sed -i "/^defaultitem=/c\defaultitem=\"$sel\"" $0
+
+case $sel in
+  'KDE Base')
+    instpkg "kdebase-workspace" ""
+    svcenable kdm
+  ;;
+  'KDE Localisations') script install/desktop/kde4/localisations;;
+  'KDE Plasma') script install/desktop/kde4/kdeplasma;;
+  'KDE Apps Meta Full')
+    if ( confirm "This option install all KDE applications with meta packages.\n\nInstall KDE Meta Full (pacman -S kde-applications-meta) ?" ) then
+      instpkg "kde-applications-meta" ""
+    fi
+  ;;
+  'KDE Apps Full')
+    if ( confirm "This option install all KDE applications.\n\nInstall KDE Full (pacman -S kde-applications) ?" ) then
+      instpkg "kde-applications" ""
+    fi
+  ;;
+  'KDE Apps') menu install/desktop/kde4/kdeapps;;
+  'KDE Complements') script install/desktop/kde4/complements;;
+esac
+
+exit 0

@@ -1,0 +1,30 @@
+#!/bin/bash
+. ./lib
+
+options=()
+options+=("mate" "")
+options+=("mate-extra" "")
+
+defaultitem=""
+sel=$(whiptail --backtitle "$apptitle" --title "Mate Install Menu :" --menu "" --default-item "$defaultitem" --cancel-button "Back" 0 0 0 \
+  "${options[@]}" \
+  3>&1 1>&2 2>&3)
+if [ ! "$?" = "0" ]; then
+  exit 1
+fi
+sed -i "/^defaultitem=/c\defaultitem=\"$sel\"" $0
+
+case $sel in
+  'mate')
+    require install/desktop/mate/packages 755
+    sed -i "/^package=/c\package=\"$sel\"" install/desktop/mate/packages
+    script install/desktop/mate/packages
+  ;;
+  'mate-extra')
+    require install/desktop/mate/packages 755
+    sed -i "/^package=/c\package=\"$sel\"" install/desktop/mate/packages
+    script install/desktop/mate/packages
+  ;;
+esac
+
+exit 0

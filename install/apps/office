@@ -1,0 +1,33 @@
+#!/bin/bash
+. ./lib
+
+options=()
+options+=("libreoffice-fresh" "" on)
+options+=("libreoffice-still" "" off)
+options+=("calcoo" "(AUR)" off)
+options+=("qalculate-gtk" "" off)
+
+sel=$(whiptail --backtitle "$apptitle" --title "Office applications :" --checklist "Choose what you want" --cancel-button "Back" 0 0 0 \
+  "${options[@]}" \
+  3>&1 1>&2 2>&3)
+if [ ! "$?" = "0" ]; then
+  exit 1
+fi
+
+for itm in $sel; do
+  case $itm in
+    '"calcoo"') aurpkg="$aurpkg $(echo $itm | sed 's/"//g')";;
+    *) pkg="$pkg $(echo $itm | sed 's/"//g')";;
+  esac
+done
+
+instpkg "$pkg" "$aurpkg"
+
+for itm in $sel; do
+  case $itm in
+    '"libreoffice-fresh"') choosepkg "libreoffice-fresh-";;
+    '"libreoffice-still"') choosepkg "libreoffice-still-";;
+  esac
+done
+
+exit 0

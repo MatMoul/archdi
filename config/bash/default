@@ -1,0 +1,40 @@
+#!/bin/bash
+. ./lib
+
+#archey3
+
+cat > /etc/profile.d/alias.sh << "EOF"
+#!/bin/bash
+alias cd..='cd ..'
+alias ll='ls --color=auto -l'
+alias l='ls --color=auto -lA'
+alias ff='find / -name'
+alias f='find . -name'
+EOF
+chmod 755 /etc/profile.d/alias.sh
+
+
+if [ ! -f /etc/profile.d/dircolors.sh ]; then
+cat >> /etc/bash.bashrc << "EOF"
+export PS1="\`if [ \$? = 0 ]; then echo -e '\[\033[01;32m\]'; else echo -e '\[\033[01;31m\]'; fi\`\w \\$ \[\033[01;0m\]"
+EOF
+fi
+
+cat > /etc/profile.d/dircolors.sh << "EOF"
+#!/bin/bash
+if [ -f "/etc/dircolors" ] ; then
+  eval $(dircolors -b /etc/dircolors)
+  if [ -f "$HOME/.dircolors" ] ; then
+    eval $(dircolors -b $HOME/.dircolors)
+  fi
+fi
+export LS_OPTS='--color=auto'
+alias  ls='ls ${LS_OPTS}'
+export LESS="--RAW-CONTROL-CHARS"
+[[ -f ~/.LESS_TERMCAP ]] && . ~/.LESS_TERMCAP
+export GREP_OPTIONS="--color=auto"
+EOF
+chmod 755 /etc/profile.d/dircolors.sh
+
+echo "source /etc/profile" > /etc/skel/.bashrc
+echo "source /etc/profile" > /root/.bashrc

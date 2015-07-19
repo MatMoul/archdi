@@ -1,0 +1,29 @@
+#!/bin/bash
+. ./lib
+
+options=()
+options+=("ttf-ms-fonts" "(AUR)" off)
+
+items=$(pacman -Ssq ttf-)
+for item in $items; do
+  options+=("$item" "" off)
+done
+
+sel=$(whiptail --backtitle "$apptitle" --title "XOrg TTF :" --checklist "" --cancel-button "Back" 0 0 0 \
+  "${options[@]}" \
+  3>&1 1>&2 2>&3)
+
+if [ ! "$?" = "0" ]; then
+  exit 1
+fi
+
+for itm in $sel; do
+  case $itm in
+    '"ttf-ms-fonts"') aurpkg="$aurpkg ttf-ms-fonts";;
+    *) pkg="$pkg $(echo $itm | sed 's/"//g')";;
+  esac
+done
+
+instpkg "$pkg" "$aurpkg"
+
+exit 0

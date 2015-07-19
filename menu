@@ -1,0 +1,26 @@
+#!/bin/bash
+. ./lib
+
+options=()
+options+=("Updates" "")
+options+=("Install" "")
+options+=("Config" "")
+options+=("Shutdown" "")
+
+defaultitem=""
+sel=$(whiptail --backtitle "$apptitle" --title "Main Menu :" --menu "" --default-item "$defaultitem" --cancel-button "Exit" 0 0 0 \
+  "${options[@]}" \
+  3>&1 1>&2 2>&3)
+if [ ! "$?" = "0" ]; then
+  exit 1
+fi
+sed -i "/^defaultitem=/c\defaultitem=\"$sel\"" $0
+
+case $sel in
+  Updates) menu updates/menu;;
+  Config) menu config/menu;;
+  Install) menu install/menu;;
+  Shutdown) menu shutdown/menu;;
+esac
+
+exit 0

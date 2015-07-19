@@ -1,0 +1,37 @@
+#!/bin/bash
+. ./lib
+
+gpus=$(lspci | grep -e VGA -e 3D)
+whiptail --backtitle "$apptitle" --title "Detected video card" --msgbox "$gpus" 0 0
+
+options=()
+options+=("virtualbox-guest-utils" "" off)
+options+=("nvidia" "" off)
+options+=("nvidia-340xx" "" off)
+options+=("nvidia-304xx" "" off)
+#options+=("catalyst" "(AUR)" off)
+#options+=("catalyst-total-hd234k" "(AUR)" off)
+
+items=$(pacman -Ssq xf86-video)
+for item in $items; do
+  options+=("$item" "" off)
+done
+
+sel=$(whiptail --backtitle "$apptitle" --title "XOrg video drivers :" --checklist "Choose video drivers for your system :" --cancel-button "Back" 0 0 0 \
+  "${options[@]}" \
+  3>&1 1>&2 2>&3)
+if [ ! "$?" = "0" ]; then
+  exit 1
+fi
+
+for itm in $sel; do
+  case $itm in
+    "catalyst" | \
+    "catalyst-total-hd234k") aurpkg="$aurpkg $(echo $itm | sed 's/"//g')";;
+    *) pkg="$pkg $(echo $itm | sed 's/"//g')";;
+  esac
+done
+
+instpkg "$pkg" "$aurpkg"
+
+exit 0

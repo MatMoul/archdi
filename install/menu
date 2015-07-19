@@ -1,0 +1,30 @@
+#!/bin/bash
+. ./lib
+
+options=()
+options+=("Console" "")
+options+=("System" "")
+options+=("XOrg" "")
+options+=("Desktop Environment" "")
+options+=("Display Manager" "")
+options+=("Applications" "")
+
+defaultitem=""
+sel=$(whiptail --backtitle "$apptitle" --title "Install Menu :" --menu "" --default-item "$defaultitem" --cancel-button "Back" 0 0 0 \
+  "${options[@]}" \
+  3>&1 1>&2 2>&3)
+if [ ! "$?" = "0" ]; then
+  exit 1
+fi
+sed -i "/^defaultitem=/c\defaultitem=\"$sel\"" $0
+
+case $sel in
+  "Console") script install/console/menu;;
+  "System") menu install/system/menu;;
+  "XOrg") menu install/xorg/menu;;
+  "Display Manager") menu install/displaymngr/menu;;
+  "Desktop Environment") menu install/desktop/menu;;
+  "Applications") menu install/apps/menu;;
+esac
+
+exit 0

@@ -1,0 +1,40 @@
+#!/bin/bash
+. ./lib
+
+options=()
+options+=("cups" "Print support" on)
+options+=("ghostscript" "" on)
+options+=("cups-pdf" "" on)
+options+=("hplip" "" off)
+options+=("gutenprint" "" off)
+options+=("foomatic-db" "" off)
+options+=("foomatic-db-engine" "" off)
+options+=("foomatic-db-nonfree" "" off)
+#options+=("system-config-printer" "" off)
+
+sel=$(whiptail --backtitle "$apptitle" --title "System Print Install" --checklist "" --cancel-button "Back" 0 0 0 \
+  "${options[@]}" \
+  3>&1 1>&2 2>&3)
+if [ ! "$?" = "0" ]; then
+  exit 1
+fi
+
+for itm in $sel; do
+  pkg="$pkg $(echo $itm | sed 's/"//g')"
+done
+
+instpkg "$pkg" "$aurpkg"
+
+for itm in $sel; do
+  case $itm in
+    '"cups"') svcenable org.cups.cupsd cups;;
+    '"cups-pdf"')
+      #if (confirm "Add a PDF Printer ?") then
+        
+      #fi
+      #Redirect target folder
+    ;;
+  esac
+done
+
+exit 0

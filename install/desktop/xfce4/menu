@@ -1,0 +1,32 @@
+#!/bin/bash
+. ./lib
+
+options=()
+options+=("xfce4" "")
+options+=("xfce4-goodies" "")
+options+=("Complements" "")
+
+defaultitem=""
+sel=$(whiptail --backtitle "$apptitle" --title "XFCE4 Install Menu :" --menu "" --default-item "$defaultitem" --cancel-button "Back" 0 0 0 \
+  "${options[@]}" \
+  3>&1 1>&2 2>&3)
+if [ ! "$?" = "0" ]; then
+  exit 1
+fi
+sed -i "/^defaultitem=/c\defaultitem=\"$sel\"" $0
+
+case $sel in
+  'xfce4')
+    require install/desktop/xfce4/packages 755
+    sed -i "/^package=/c\package=\"$sel\"" install/desktop/xfce4/packages
+    script install/desktop/xfce4/packages
+  ;;
+  'xfce4-goodies')
+    require install/desktop/xfce4/packages 755
+    sed -i "/^package=/c\package=\"$sel\"" install/desktop/xfce4/packages
+    script install/desktop/xfce4/packages
+  ;;
+  'Complements') script install/desktop/xfce4/complements;;
+esac
+
+exit 0

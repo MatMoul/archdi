@@ -1,0 +1,45 @@
+#!/bin/bash
+. ./lib
+
+options=()
+options+=("Add User" "")
+options+=("List Users" "")
+options+=("Delete User" "")
+
+defaultitem=""
+sel=$(whiptail --backtitle "$apptitle" --title "Users Menu :" --menu "" --default-item "$defaultitem" --cancel-button "Back" 0 0 0 \
+  "${options[@]}" \
+  3>&1 1>&2 2>&3)
+if [ ! "$?" = "0" ]; then
+  exit 1
+fi
+sed -i "/^defaultitem=/c\defaultitem=\"$sel\"" $0
+
+case $sel in
+		'List Users')
+		  clear
+		  awk -F: '{if ($3 >= 1000) { print $1 } }' /etc/passwd
+		  read -n1 -p "press a key to continue"
+		;;
+		'Add User')
+		  username=$(whiptail --backtitle "$apptitle" --title "Add User" --inputbox "Enter the new user name :" 0 0 3>&1 1>&2 2>&3)
+		  if [ "$?" = "0" ]; then
+		    useradd -d /home/$username -s /bin/bash -m -N $username
+		    clear
+		    echo "User $username created."
+		    echo ""
+		    echo "Choose a password for $username :"
+		    echo ""
+		    passwd $username
+		    pressanykey
+		  fi
+		;;
+		'Delete User')
+		  username=$(whiptail --backtitle "$apptitle" --title "Delete User" --inputbox "Enter the user name to delete :" 0 0 3>&1 1>&2 2>&3)
+		  if [ "$?" = "0" ]; then
+		    userdel -r -f $username
+		  fi
+		;;
+esac
+
+exit 0

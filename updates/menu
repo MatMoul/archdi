@@ -1,0 +1,85 @@
+#!/bin/bash
+. ./lib
+
+options=()
+if [ -f /usr/bin/yaourt ]; then
+  options+=("Upgrade with yaourt" "yaourt -Syua")
+  aurhelper=1
+fi
+if [ -f /usr/bin/packer ]; then
+  options+=("Upgrade with packer" "packer -Syu")
+  aurhelper=1
+fi
+if [ ! "$aurhelper" = "1" ]; then
+  options+=("Install yaourt" "")
+  options+=("Install packer" "")
+  options+=("" "")
+fi
+options+=("Upgrade" "pacman -Syu")
+options+=("Clean" "pacman -Sc")
+options+=("" "")
+options+=("Edit pacman.conf" "")
+options+=("Edit mirrorlist" "")
+options+=("" "")
+if [ "$aurhelper" = "1" ]; then
+  if [ ! -f /usr/bin/yaourt ]; then
+    options+=("Install yaourt" "")
+  fi
+  if [ ! -f /usr/bin/packer ]; then
+    options+=("Install packer" "")
+  fi
+fi
+
+sel=$(whiptail --backtitle "$apptitle" --title "Updates Menu :" --menu "" --cancel-button "Back" 0 0 0 \
+  "${options[@]}" \
+  3>&1 1>&2 2>&3)
+if [ ! "$?" = "0" ]; then
+  exit 1
+fi
+
+checkaurdependencies(){
+  if [ ! -f /usr/bin/automake ]; then
+    pacman -S --needed base-devel
+  fi
+  if [ ! $(id -u "aurbuilder") ]; then
+    newpass=$(< /dev/urandom tr -dc "@#*%&_A-Z-a-z-0-9" | head -c16)
+    useradd -r -N -M -d /home/.aurbuilder -s /usr/bin/nologin aurbuilder
+    echo -e "$newpass\n$newpass\n"|passwd aurbuilder
+    echo "aurbuilder ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+    echo "root ALL=(aurbuilder) NOPASSWD: ALL" >> /etc/sudoers
+    newpass=""
+  fi
+}
+checkarchlinuxfrrepo(){
+  if [ ! $(cat /etc/pacman.conf | grep "archlinuxfr") ]; then
+    echo "[archlinuxfr]" >> /etc/pacman.conf
+    echo "SigLevel = Never" >> /etc/pacman.conf
+    echo 'Server = http://repo.archlinux.fr/$arch' >> /etc/pacman.conf
+    pacman -Syy
+  fi
+}
+
+case $sel in
+  'Upgrade') pacman -Syu;;
+  'Upgrade with yaourt') sudo -u aurbuilder yaourt -Syua;;
+  'Upgrade with packer') sudo -u aurbuilder packer -Syu;;
+  'Clean') pacman -Sc;;
+  'Edit pacman.conf') nano /etc/pacman.conf;;
+  'Edit mirrorlist') nano /etc/pacman.d/mirrorlist;;
+  'Install yaourt')
+    if(confirm "Yaourt allow you to access the AUR applications.\nBecause is not possible to compile applications as root,\nthis installer create an aurbuilder user.\n\nInstall yaourt ?") then
+      checkaurdependencies
+      checkarchlinuxfrrepo
+      pacman -S --needed yaourt
+    fi
+  ;;
+  'Install packer')
+    if(confirm "Packer allow you to access the AUR applications.\nBecause is not possible to compile applications as root,\nthis installer create an aurbuilder user.\n\nInstall packer ?") then
+      checkaurdependencies
+      checkarchlinuxfrrepo
+      pacman -S --needed packer
+    fi
+  ;;
+esac
+
+exit 0

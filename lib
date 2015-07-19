@@ -1,0 +1,180 @@
+#!/bin/bash
+
+
+# Arch Linux Desktop Install (archdi)
+# -----------------------------------
+# author  : matmoul[@sourceforge.net]
+# license : GPLv3 (http://opensource.org/licenses/GPL-3.0)
+
+
+
+apptitle="Arch Linux Desktop Install (archdi) - Version: 2015.06.15.21.37.45 (GPLv3)"
+baseurl=https://raw.githubusercontent.com/MatMoul/archdi/master
+cachedir=~/.cache/archdi
+
+
+
+
+
+# $1: path
+menu(){
+  require $1 755
+  $cachedir/$1
+  if [ $? = 0 ]; then
+    menu $1
+  fi
+}
+
+
+# $1: path
+script(){
+  require $1 755
+  $cachedir/$1
+}
+
+
+# $1: pacman packages
+# $2: aur packages
+instpkg(){
+  if [ ! "$1" = "" ]; then
+    clear
+    echo "# pacman -S --needed $1"
+    pacman -S --needed $1
+    pressanykey
+  fi
+  if [ ! "$2" = "" ]; then
+    if [ -f /usr/bin/yaourt ]; then
+      clear
+      echo "# sudo -u aurbuilder yaourt -S --needed $2"
+      sudo -u aurbuilder yaourt -S --needed $2
+      pressanykey
+    else
+      if [ -f /usr/bin/packer ]; then
+        clear
+        echo "# sudo -u aurbuilder packer -S $2"
+        sudo -u aurbuilder packer -S $2
+        pressanykey
+      else
+        clear
+        echo "To install AUR packages, you need to install yaourt or packer in updates menu !"
+      fi
+    fi
+  fi
+}
+
+
+# $1: string
+# $2: [title]
+choosepkg(){
+  if [ "$2" = "" ]; then
+    title=$1
+  else
+    title=$2
+  fi
+  options=()
+  items=$(pacman -Ssq $1)
+  for item in $items; do
+    options+=("$item" "" off)
+  done
+  sel=$(whiptail --backtitle "$apptitle" --title "$title" --checklist "" --cancel-button "Back" 0 0 0 \
+    "${options[@]}" \
+    3>&1 1>&2 2>&3)
+  if [ ! "$?" = "0" ]; then
+    exit 1
+  fi
+  for itm in $sel; do
+    pkg="$pkg $(echo $itm | sed 's/"//g')"
+  done
+  instpkg "$pkg" "$aurpkg"
+  exit 0
+}
+
+
+# $1: path
+# $2: chmod
+require(){
+  if [ ! -f "$cachedir/$1" ]; then
+    path=$(dirname $1)
+    mkdir -p $cachedir/$path 2> /dev/null
+    cd $cachedir/$path
+    wget $baseurl/$1 2> /dev/null
+  fi
+  chmod $2 $cachedir/$1
+  cd $cachedir
+}
+
+
+# $1 : message
+# $2 : args
+confirm(){
+  whiptail --backtitle "$apptitle" --yesno "$1" $2 0 0
+}
+
+
+pressanykey(){
+  read -n1 -p "Press any key to continue."
+}
+
+
+# $1 : servicename
+# $2 : [displayname]
+svcstart(){
+  if [ "$2" = "" ]; then
+    displayname="$1"
+  else
+    displayname="$2 ($1)"
+  fi
+  if (confirm "Start $displayname service ?\n\nsystemctl start $1") then
+    systemctl start $1
+  else
+    exit 1
+  fi
+}
+
+# $1 : servicename
+# $2 : [displayname]
+svcenable(){
+  if [ "$2" = "" ]; then
+    displayname="$1"
+  else
+    displayname="$2 ($1)"
+  fi
+  if (confirm "Start $displayname service at boot ?\n\nsystemctl enable $1") then
+    systemctl enable $1
+  else
+    exit 1
+  fi
+}
+
+# $1 : servicename
+# $2 : [displayname]
+svcdisable(){
+  if [ "$2" = "" ]; then
+    displayname="$1"
+  else
+    displayname="$2 ($1)"
+  fi
+  if (confirm "Disable $displayname service at boot ?\n\nsystemctl disable $1") then
+    systemctl disable $1
+  else
+    exit 1
+  fi
+}
+
+
+
+while (( "$#" )); do
+  case $1 in
+    --root)
+      menu menu
+      exit 0
+    ;;
+    --chroot)
+      require menu 755
+      sed -i "/options+=(\"Shutdown\" \"\")/d" menu
+      menu menu
+      exit 0
+    ;;
+  esac
+  shift
+done

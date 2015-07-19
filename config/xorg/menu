@@ -1,0 +1,38 @@
+#!/bin/bash
+. ./lib
+
+options=()
+options+=("Generate /etc/X11/xorg.conf.d/00-keyboard.conf" "")
+options+=("Edit /etc/X11/xorg.conf.d/00-keyboard.conf" "")
+
+defaultitem=""
+sel=$(whiptail --backtitle "$apptitle" --title "Bash Configuration :" --menu "" --default-item "$defaultitem" --cancel-button "Back" 0 0 0 \
+  "${options[@]}" \
+  3>&1 1>&2 2>&3)
+if [ ! "$?" = "0" ]; then
+  exit 1
+fi
+sed -i "/^defaultitem=/c\defaultitem=\"$sel\"" $0
+
+case $sel in
+  "Generate /etc/X11/xorg.conf.d/00-keyboard.conf")
+    localectl > /dev/null
+    if [ "$?" = "0" ]; then
+      script config/xorg/keyboard
+    else
+      echo '# Because dbus is not available in arch-chroot, if you run this command after reboot a best wizard is provided' > /etc/X11/xorg.conf.d/00-keyboard.conf
+      echo 'Section "InputClass"' >> /etc/X11/xorg.conf.d/00-keyboard.conf
+      echo '  Identifier "system-keyboard"' >> /etc/X11/xorg.conf.d/00-keyboard.conf
+      echo '  MatchIsKeyboard "on"' >> /etc/X11/xorg.conf.d/00-keyboard.conf
+      echo '  Option "XkbLayout" "us"' >> /etc/X11/xorg.conf.d/00-keyboard.conf
+      echo '  Option "XkbModel" "pc104"' >> /etc/X11/xorg.conf.d/00-keyboard.conf
+      echo '  Option "XkbVariant" ""' >> /etc/X11/xorg.conf.d/00-keyboard.conf
+      echo '  Option "XkbOptions" ""' >> /etc/X11/xorg.conf.d/00-keyboard.conf
+      echo 'EndSection' >> /etc/X11/xorg.conf.d/00-keyboard.conf
+      nano /etc/X11/xorg.conf.d/00-keyboard.conf
+    fi
+  ;;
+  "Edit /etc/X11/xorg.conf.d/00-keyboard.conf") nano /etc/X11/xorg.conf.d/00-keyboard.conf;;
+esac
+
+exit 0

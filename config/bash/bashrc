@@ -1,0 +1,17 @@
+#!/bin/bash
+. ./lib
+
+if ( confirm "Replace /etc/skel/.bashrc ?\n\n(content of the file : source /etc/profile)" ) then
+  echo "source /etc/profile" > /etc/skel/.bashrc
+fi
+if ( confirm "Replace /root/.bashrc ?\n\n(content of the file : source /etc/profile)" ) then
+  echo "source /etc/profile" > /root/.bashrc
+fi
+items=$(ls /home/)
+for item in $items; do
+  if ( confirm "Replace /home/$items/.bashrc ?\n\n(content of the file : source /etc/profile)" ) then
+    echo "source /etc/profile" > /home/$items/.bashrc
+  fi
+done
+
+exit 0

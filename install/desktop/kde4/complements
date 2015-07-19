@@ -1,0 +1,66 @@
+#!/bin/bash
+. ./lib
+
+options=()
+options+=("kdebase-plasma" "" on)
+options+=("kdeplasma-applets-plasma-nm" "" on)
+options+=("numlockx" "(Numlock on for kdm)" on)
+options+=("kdesu" "" on)
+options+=("kdesu4" "" on)
+options+=("konsolepart4" "" on)
+options+=("gnome-keyring" "" on)
+options+=("smb4k" "" on)
+options+=("partitionmanager" "" on)
+options+=("archlinux-themes-kdm" "theme" on)
+options+=("breeze-kde4" "theme" on)
+options+=("breeze" "theme" on)
+options+=("oxygen-gtk2" "theme gtk 2" on)
+options+=("oxygen-gtk3-git" "(AUR) theme gtk 3" off)
+options+=("qtcurve-kde4" "theme" off)
+options+=("gtk-kde4" "(AUR) gtk2 theme config" on)
+options+=("gtk3-dark-theme-patch" "/etc/skel/.config/gtk-3.0/settings.ini" off)
+#options+=("qtcurve-gtk2" "" off)
+#options+=("kde-gtk-config" "gtk theme config FOR PLASMA5" off)
+#qtcurve-kde4
+#qtcurve-gtk2
+#qtcurve-qt4
+#qtcurve-qt5
+#options+=("gtk-qt-engine" "(AUR)" off)
+options+=("kdeconnect" "" off)
+options+=("sshfs" "(For kdeconnect)" off)
+
+sel=$(whiptail --backtitle "$apptitle" --title "KDE Complements :" --checklist "" --cancel-button "Back" 0 0 0 \
+  "${options[@]}" \
+  3>&1 1>&2 2>&3)
+if [ ! "$?" = "0" ]; then
+  exit 1
+fi
+
+for itm in $sel; do
+  case $itm in
+    '"gtk-qt-engine"') aurpkg="$aurpkg $(echo $itm | sed 's/"//g')";;
+    '"gtk-kde4"') aurpkg="$aurpkg $(echo $itm | sed 's/"//g')";;
+    '"oxygen-gtk3-git"') aurpkg="$aurpkg $(echo $itm | sed 's/"//g')";;
+    '"gtk3-dark-theme-patch"') ;;
+    *) pkg="$pkg $(echo $itm | sed 's/"//g')";;
+  esac
+done
+
+instpkg "$pkg" "$aurpkg"
+
+for itm in $sel; do
+  case $itm in
+    '"gtk3-dark-theme-patch"')
+      mkdir -p /etc/skel/.config/gtk-3.0
+      echo "[Settings]" > /etc/skel/.config/gtk-3.0/settings.ini
+      echo "gtk-application-prefer-dark-theme=true" >> /etc/skel/.config/gtk-3.0/settings.ini
+    ;;
+    '"numlockx"')
+      if ( confirm "Add numlockx on to /usr/share/config/kdm/Xsetup ?" ) then
+        echo "numlockx on" >> /usr/share/config/kdm/Xsetup
+      fi
+    ;;
+  esac
+done
+
+exit 0

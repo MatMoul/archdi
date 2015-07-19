@@ -1,0 +1,48 @@
+#!/bin/bash
+. ./lib
+
+options=()
+options+=("bash-completion" "Best completion in bash" on)
+options+=("lsof" "ls open file" on)
+options+=("nmon" "System monitor" on)
+options+=("rsync" "Sync files" on)
+#options+=("unzip" "ZIP files" on)
+#options+=("unrar" "RAR files" off)
+#options+=("zip" "Compress files" off)
+#options+=("p7zip" "File Archiver" off)
+options+=("dnsutils" "DNS tools (nslookup)" on)
+options+=("traceroute" "Trace network route" on)
+options+=("nmap" "Network scanner" off)
+options+=("mc" "Dual pane file explorer" off)
+options+=("links" "Web browser" off)
+options+=("powertop" "power mon and management" off)
+#options+=("gpm" "Console mouse support" off)
+options+=("wavemon" "WIFI monitor" off)
+options+=("net-tools" "(deprecated) old ifconfig" off)
+
+
+sel=$(whiptail --backtitle "$apptitle" --title "Console applications :" --checklist "" --cancel-button "Back" 0 0 0 \
+  "${options[@]}" \
+  3>&1 1>&2 2>&3)
+if [ ! "$?" = "0" ]; then
+  exit 1
+fi
+
+for itm in $sel; do
+  case $itm in
+    *) pkg="$pkg $(echo $itm | sed 's/"//g')";;
+  esac
+done
+
+instpkg "$pkg" "$aurpkg"
+
+for itm in $sel; do
+  case $itm in
+    '"gpm"')
+      svcstart gpm
+      svcenable gpm
+    ;;
+  esac
+done
+
+exit 0

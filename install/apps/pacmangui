@@ -1,0 +1,39 @@
+#!/bin/bash
+. ./lib
+options=()
+options+=("octopi" "(AUR) (QT)" off)
+options+=("appset-qt" "(AUR) (QT)" off)
+options+=("pamac-aur" "(AUR) (GTK)" off)
+
+sel=$(whiptail --backtitle "$apptitle" --title "PacMan GUI applications :" --checklist "Recommended to choose one" --cancel-button "Back" 0 0 0 \
+  "${options[@]}" \
+  3>&1 1>&2 2>&3)
+if [ ! "$?" = "0" ]; then
+  exit 1
+fi
+
+for itm in $sel; do
+  case $itm in
+    '"octopi"' | \
+    '"appset-qt"' | \
+    '"pamac-aur"')
+      multilib="true"
+      aurpkg="$aurpkg $(echo $itm | sed 's/"//g')"
+    ;;
+    *) pkg="$pkg $(echo $itm | sed 's/"//g')";;
+  esac
+done
+
+if [ "$multilib" = "true" ]; then
+  if ( confirm "To install wine or wine_gecko, multilib repo is requires.\nFor this, the script edit the [mulilib] part in /etc/pacman.conf and run pacman -Syu\n\nEnable multilib repo ?" ) then
+    sed -i '/\[multilib\]/s/^#//g' /etc/pacman.conf
+    sed -i '/\[multilib\]/{n;s/^#//g}' /etc/pacman.conf
+    pacman -Syu
+  else
+    exit 1
+  fi
+fi
+
+instpkg "$pkg" "$aurpkg"
+
+exit 0

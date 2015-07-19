@@ -1,0 +1,35 @@
+#!/bin/bash
+. ./lib
+
+options=()
+options+=("vlc" "Video player" off)
+options+=("smplayer" "Video player" off)
+options+=("mpv" "Recommended for smplayer" off)
+options+=("smtube" "Youtube Player" off)
+options+=("amarok" "Audio Player" off)
+options+=("guayadeque" "Audio Player" off)
+options+=("clementine" "Audio Player" off)
+options+=("mixxx" "Audio Player" off)
+options+=("gmusicbrowser" "(AUR) Audio Player" off)
+options+=("avidemux-gtk" "Video Editor" off)
+options+=("avidemux-qt" "Video Editor" off)
+options+=("simplescreenrecorder" "Screen Recorder" off)
+#options+=("lib32-simplescreenrecorder" "For simplescreenrecorder" off) #Need multilib
+
+sel=$(whiptail --backtitle "$apptitle" --title "Multimedia applications :" --checklist "Choose what you want" --cancel-button "Back" 0 0 0 \
+  "${options[@]}" \
+  3>&1 1>&2 2>&3)
+if [ ! "$?" = "0" ]; then
+  exit 1
+fi
+
+for itm in $sel; do
+  case $itm in
+    '"gmusicbrowser"') aurpkg="$aurpkg $(echo $itm | sed 's/"//g')";;
+    *) pkg="$pkg $(echo $itm | sed 's/"//g')";;
+  esac
+done
+
+instpkg "$pkg" "$aurpkg"
+
+exit 0

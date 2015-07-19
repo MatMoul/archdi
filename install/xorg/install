@@ -1,0 +1,36 @@
+#!/bin/bash
+. ./lib
+
+options=()
+options+=("xorg-server" "" on)
+options+=("xorg-xinit" "" on)
+options+=("xorg-utils" "" on)
+
+items=$(pacman -Ssq xorg-)
+for item in $items; do
+  case $item in
+    "xorg-server") ;;
+    "xorg-xinit") ;;
+    "xorg-utils") ;;
+    *)
+      if [ ! "$(echo $item | cut -d '-' -f 1)" = "xf86" ]; then
+        options+=("$item" "" off)
+      fi
+    ;;
+  esac
+done
+
+sel=$(whiptail --backtitle "$apptitle" --title "XOrg packages :" --checklist "" --cancel-button "Back" 0 0 0 \
+  "${options[@]}" \
+  3>&1 1>&2 2>&3)
+if [ ! "$?" = "0" ]; then
+  exit 1
+fi
+
+for itm in $sel; do
+  pkg="$pkg $(echo $itm | sed 's/"//g')"
+done
+
+instpkg "$pkg" "$aurpkg"
+
+exit 0

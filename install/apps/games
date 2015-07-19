@@ -1,0 +1,23 @@
+#!/bin/bash
+. ./lib
+
+options=()
+options+=("0AD" "" off)
+options+=("puzzles" "" off)
+
+sel=$(whiptail --backtitle "$apptitle" --title "Game applications :" --checklist "Choose what you want" --cancel-button "Back" 0 0 0 \
+  "${options[@]}" \
+  3>&1 1>&2 2>&3)
+if [ ! "$?" = "0" ]; then
+  exit 1
+fi
+
+for itm in $sel; do
+  case $itm in
+    *) pkg="$pkg $(echo $itm | sed 's/"//g')";;
+  esac
+done
+
+instpkg "$pkg" "$aurpkg"
+
+exit 0

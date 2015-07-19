@@ -1,0 +1,22 @@
+#!/bin/bash
+. ./lib
+
+options=()
+options+=("Default" "")
+options+=("TTF" "")
+
+defaultitem=""
+sel=$(whiptail --backtitle "$apptitle" --title "XOrg Fonts Install Menu" --menu "" --default-item "$defaultitem" --cancel-button "Back" 0 0 0 \
+  "${options[@]}" \
+  3>&1 1>&2 2>&3)
+if [ ! "$?" = "0" ]; then
+  exit 1
+fi
+sed -i "/^defaultitem=/c\defaultitem=\"$sel\"" $0
+
+case $sel in
+  'Default') script install/xorg/fonts/default;;
+  'TTF') script install/xorg/fonts/ttf;;
+esac
+
+exit 0

@@ -1,0 +1,29 @@
+#!/bin/bash
+. ./lib
+
+options=()
+
+items=$(pacman -Ssq kdeplasma-)
+for item in $items; do
+  case $item in
+    "kdeplasma-addons-applets-icontasks" | \
+    "kdeplasma-applets-plasma-nm") options+=("$item" "" on);;
+    *) options+=("$item" "" off);;
+  esac
+done
+
+sel=$(whiptail --backtitle "$apptitle" --title "KDE Plasma :" --checklist "" --cancel-button "Back" 0 0 0 \
+  "${options[@]}" \
+  3>&1 1>&2 2>&3)
+
+if [ ! "$?" = "0" ]; then
+  exit 1
+fi
+
+for itm in $sel; do
+  pkg="$pkg $(echo $itm | sed 's/"//g')"
+done
+
+instpkg "$pkg" "$aurpkg"
+
+exit 0

@@ -1,0 +1,39 @@
+#!/bin/bash
+. ./lib
+
+options=()
+options+=("Office" "")
+options+=("Internet" "")
+options+=("GStreamer" "")
+options+=("Multimedia" "")
+options+=("Graphic" "")
+#options+=("Network" "")
+options+=("System" "")
+options+=("PacMan GUI" "")
+#options+=("Dev" "")
+#options+=("Games" "")
+
+
+defaultitem=""
+sel=$(whiptail --backtitle "$apptitle" --title "Apps Install Menu :" --menu "" --default-item "$defaultitem" --cancel-button "Back" 0 0 0 \
+  "${options[@]}" \
+  3>&1 1>&2 2>&3)
+if [ ! "$?" = "0" ]; then
+  exit 1
+fi
+sed -i "/^defaultitem=/c\defaultitem=\"$sel\"" $0
+
+case $sel in
+  "Office") script install/apps/office;;
+  "Internet") script install/apps/internet;;
+  "GStreamer") script install/apps/gstreamer;;
+  "Multimedia") script install/apps/multimedia;;
+  "Graphic") script install/apps/graphic;;
+  "Network") script install/apps/network;;
+  "System") script install/apps/system;;
+  "PacMan GUI") script install/apps/pacmangui;;
+  "Dev") script install/apps/dev;;
+  "Games") script install/apps/games;;
+esac
+
+exit 0

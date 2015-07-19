@@ -1,0 +1,16 @@
+#!/bin/bash
+. ./lib
+
+if ( confirm "MadCatz Mad R.A.T.TE patch for xorg. This correct the stop working mouse bug after start X session.\n\nCreate /usr/share/X11/xorg.conf.d/50-madcatzratte.conf ?" ) then
+cat << EOF > /usr/share/X11/xorg.conf.d/50-madcatzratte.conf
+Section "InputClass"
+  Identifier "Mad Catz Mad Catz R.A.T.TE"
+  MatchProduct "Mad Catz Mad Catz R.A.T.TE"
+  MatchDevicePath "/dev/input/event*"
+  Option "ButtonMapping" " 1 2 3 4 5 6 7 8 9 10 11 12 0 0 0"
+  Option "ZAxisMapping" "4 5 6 7"
+EndSection
+EOF
+fi
+
+exit 0
