@@ -2,7 +2,7 @@
 
 Just a simple bash script to install and configure a full personal computer with Arch Linux.
 
-Show archfi project to start your arch installation : https://sourceforge.net/projects/archfi/
+Show archfi project to start your arch installation : https://github.com/MatMoul/archdi
 
 First, install Arch Linux with the official média and optionally with archfi.
 
