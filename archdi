@@ -13,16 +13,14 @@
 
 
 apptitle="Arch Linux Desktop Install (archdi) - Version: 2015.04.26.22.14.52 (GPLv3)"
+version="2015.04.26.22.14.52"
 cachedir=~/.cache/archdi
 
-liburl=https://raw.githubusercontent.com/MatMoul/archdi-pkg/master/lib
-#liburl=http://archdi.sourceforge.net/archdi/archdi-lib
+liburl1=http://archdi.sourceforge.net/archdi-lib
+liburl2=https://raw.githubusercontent.com/MatMoul/archdi-pkg/master/lib
 
-#lastversionurl=https://raw.githubusercontent.com/MatMoul/archdi/NewCodeStructure/version
-#lastversionurl=https://raw.githubusercontent.com/MatMoul/archdi/master/version
-#lastversionurl=http://archdi.sourceforge.net/archdi/version
-#version="2015.04.26.22.14.52"
-
+lastverurl1=https://raw.githubusercontent.com/MatMoul/archdi/master/version
+lastverurl2=http://archdi.sourceforge.net/archdi/version
 
 
 help(){
@@ -62,11 +60,32 @@ dependencies(){
   needinstall="false"
   clear
   echo "Checking internet and server connexion ..."
+  lastver=$lastverurl1
+  lastversion=$(curl $lastver)
+  if [ "$?" = "0" ] && [ "${#lastversion}" = "19" ]; then
+    liburl=$liburl1
+  else
+    lastver=$lastverurl2
+    lastversion=$(curl $lastver)
+    if [ "$?" = "0" ] && [ "${#lastversion}" = "19" ]; then
+      liburl=$liburl2
+    else
+      exit 1
+    fi
+  fi
+  exit 0
+  
+  liburl=$liburl1
   if (curl $liburl 1>/dev/null 2>/dev/null) then
     echo "Connexion OK."
   else
-    echo "No connexion, please check your internet connexion !"
-    exit 1
+    liburl=$liburl2
+    if (curl $liburl 1>/dev/null 2>/dev/null) then
+      echo "Connexion OK."
+    else
+      echo "No connexion, please check your internet connexion !"
+      exit 1
+    fi
   fi
   echo ""
   echo "Checking $apptitle dependencies :"
@@ -108,9 +127,13 @@ dependencies(){
 
 chkupgrade(){
   if [ -f "/usr/bin/archdi" ]; then
-    chkver=$version
+    #lastverurl=$lastverurl1
+    #chkver=$(curl $lastverurl)
+    
+    #chkver=$version
     #chkver=$(curl archdi.sourceforge.net/archdi/version)
-    if [ ! "$version" = "$chkver" ]; then
+    
+    if [ ! "$version" = "$lastversion" ]; then
       if (whiptail --backtitle "$apptitle" --yesno "New version found !\n\nInstall last version ?" 0 0) then
         cd /tmp
         wget archdi.sourceforge.net/archdi
