@@ -17,8 +17,7 @@ version="2015.04.26.22.14.52"
 cachedir=~/.cache/archdi
 
 lastverurl1=http://archdi.sourceforge.net/version
-#lastverurl2=https://raw.githubusercontent.com/MatMoul/archdi/master/version
-lastverurl2=https://raw.githubusercontent.com/MatMoul/archdi/NewCodeStructure/version
+lastverurl2=https://raw.githubusercontent.com/MatMoul/archdi/master/version
 
 binurl1=archdi.sourceforge.net/archdi
 binurl2=matmoul.github.io/archdi
@@ -79,20 +78,6 @@ dependencies(){
       exit 1
     fi
   fi
-  
-  #liburl=$liburl1
-  #if (curl $liburl 1>/dev/null 2>/dev/null) then
-  #  echo "Connexion OK."
-  #else
-  #  liburl=$liburl2
-  #  if (curl $liburl 1>/dev/null 2>/dev/null) then
-  #    echo "Connexion OK."
-  #  else
-  #    echo "No connexion, please check your internet connexion !"
-  #    exit 1
-  #  fi
-  #fi
-  
   echo ""
   echo "Checking $apptitle dependencies :"
   echo ""
@@ -124,7 +109,6 @@ dependencies(){
 
 chkupgrade(){
   if [ "$0" = "/usr/bin/archdi" ]; then
-  #if [ -f "/usr/bin/archdi" ]; then
     if [ ! "$version" = "$lastversion" ]; then
       if (whiptail --backtitle "$apptitle" --yesno "New version found !\n\nInstall last version ?" 0 0) then
         cd /tmp
@@ -142,8 +126,6 @@ while (( "$#" )); do
                exit 0;;
     -i|--install) install
                   exit 0;;
-    #--rc) isrc=true
-    #      liburl=$liburl-rc;;
     --chroot) chrootoption="true";;
   esac
   shift
