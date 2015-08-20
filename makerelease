@@ -86,7 +86,7 @@ mkdir -p $targetpath
 cp -R * $targetpath
 
 echo "Publish release..."
-scp -r $targetpath matmoul@web.sourceforge.net:/home/frs/project/$prjname/release/
+scp -r $targetpath matmoul@web.sourceforge.net:/home/frs/project/$prjname/release/bin/
 
 echo "Update redirect page..."
 pubfile=.build/index.php
