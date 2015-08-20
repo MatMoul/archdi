@@ -16,7 +16,11 @@ apptitle="Arch Linux Desktop Install (archdi) - Version: 2015.04.26.22.14.52 (GP
 cachedir=~/.cache/archdi
 
 liburl=https://raw.githubusercontent.com/MatMoul/archdi-pkg/master/lib
-liburl=http://archdi.sourceforge.net/archdi/archdi-lib
+#liburl=http://archdi.sourceforge.net/archdi/archdi-lib
+
+#lastversionurl=https://raw.githubusercontent.com/MatMoul/archdi/NewCodeStructure/version
+#lastversionurl=https://raw.githubusercontent.com/MatMoul/archdi/master/version
+#lastversionurl=http://archdi.sourceforge.net/archdi/version
 #version="2015.04.26.22.14.52"
 
 
@@ -57,7 +61,7 @@ run(){
 dependencies(){
   needinstall="false"
   clear
-  echo "Checking internet connexion and sourceforge server..."
+  echo "Checking internet and server connexion ..."
   if (curl $liburl 1>/dev/null 2>/dev/null) then
     echo "Connexion OK."
   else
