@@ -35,8 +35,8 @@ echo "Building version $version..."
 echo ""
 
 echo "Finalise archdi script..."
-sed -i /apptitle=/c\apptitle=\""Arch Linux Desktop Install (archdi) - Version: $version (GPLv3)"\" archfi
-sed -i /version=/c\version=\""$version"\" archfi
+sed -i /apptitle=/c\apptitle=\""Arch Linux Desktop Install (archdi) - Version: $version (GPLv3)"\" archdi
+sed -i /version=/c\version=\""$version"\" archdi
 
 echo "Set version..."
 echo "$version" >version
