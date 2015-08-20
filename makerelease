@@ -1,0 +1,100 @@
+#!/bin/bash
+
+prjname=archdi
+version=$(date +"%Y.%m.%d.%H.%M.%S")
+branch=$(git rev-parse --abbrev-ref HEAD)
+
+
+ssh -T git@github.com
+if [ ! "$?" = "1" ]; then
+  echo "No Github ssh key loaded exiting..."
+  exit 1
+fi
+
+scp matmoul@web.sourceforge.net:/home/frs/project/$prjname/README.txt /dev/null
+if [ ! "$?" = "0" ]; then
+  echo "No Sourceforge ssh key loaded exiting..."
+  exit 1
+fi
+
+
+clear
+read -p "Current branch is $branch. Continue ? (y/N)" choice
+case "$choice" in 
+  n|N|'' )
+    echo "cancel build !"
+    exit 1
+  ;;
+  y|Y ) echo "Begin Build Release...";;
+  * )
+    echo "cancel build !"
+    exit 1
+  ;;
+esac
+echo "Building version $version..."
+echo ""
+
+echo "Finalise archdi script..."
+sed -i /apptitle=/c\apptitle=\""Arch Linux Desktop Install (archdi) - Version: $version (GPLv3)"\" archfi
+sed -i /version=/c\version=\""$version"\" archfi
+
+echo "Set version..."
+echo "$version" >version
+chmod 640 version
+
+echo "Make last commit..."
+git commit -a -m "New Release : $version"
+
+if [ ! "$branch" = "master" ]; then
+  echo "Merge branch $branch to master..."
+  git checkout master
+  git merge $branch
+
+  read -p "Delete branch $branch ? (Y/n)" choice
+  case "$choice" in 
+    y|Y|'' )
+      git branch -D $branch
+    ;;
+  esac
+fi
+
+read -p "Publish to server ? (Y/n)" choice
+case "$choice" in 
+  n|N )
+    exit 1
+  ;;
+esac
+
+echo "Create index.html..."
+fle=$(cat archdi)
+git checkout gh-pages
+echo "$fle" > index.html
+chmod 640 index.html
+git commit -a -m "New Release : $version"
+echo "Push index.html..."
+git push
+
+git checkout master
+echo "Push release..."
+git push
+
+
+#Sourceforge :
+
+targetpath=.build/$version
+mkdir -p $targetpath
+cp -R * $targetpath
+
+echo "Publish release..."
+scp -r $targetpath matmoul@web.sourceforge.net:/home/frs/project/$prjname/release/
+
+echo "Update redirect page..."
+pubfile=.build/index.php
+echo "<?php" > $pubfile
+echo "header(\"Location: http://downloads.sourceforge.net/project/$prjname/release/$version/$prjname\");" >> $pubfile
+echo "exit;" >> $pubfile
+echo "?>" >> $pubfile
+scp $pubfile matmoul@web.sourceforge.net:/home/project-web/$prjname/htdocs/$prjname/index.php
+scp version matmoul@web.sourceforge.net:/home/project-web/$prjname/htdocs/version
+
+rm -R .build
