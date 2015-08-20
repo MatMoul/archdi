@@ -119,7 +119,7 @@ dependencies(){
   fi
   echo ""
   echo "Checking bin version..."
-  #chkupgrade
+  chkupgrade
 }
 
 chkupgrade(){
