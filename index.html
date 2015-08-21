@@ -12,8 +12,8 @@
 
 
 
-apptitle="Arch Linux Desktop Install (archdi) - Version: 2015.08.21.01.45.15 (GPLv3)"
-version="2015.08.21.01.45.15"
+apptitle="Arch Linux Desktop Install (archdi) - Version: 2015.08.21.02.00.22 (GPLv3)"
+version="2015.08.21.02.00.22"
 cachedir=~/.cache/archdi
 
 lastverurl1=http://archdi.sourceforge.net/version
@@ -63,14 +63,14 @@ dependencies(){
   needinstall="false"
   clear
   echo "Checking internet and server connexion ..."
-  lastver=$lastverurl1
-version="2015.08.21.01.45.15"
+  lastverurl=$lastverurl1
+version="2015.08.21.02.00.22"
   if [ "$?" = "0" ] && [ "${#lastversion}" = "19" ]; then
     binurl=$binurl1
     liburl=$liburl1
   else
-    lastver=$lastverurl2
-version="2015.08.21.01.45.15"
+    lastverurl=$lastverurl2
+version="2015.08.21.02.00.22"
     if [ "$?" = "0" ] && [ "${#lastversion}" = "19" ]; then
       binurl=$binurl2
       liburl=$liburl2
