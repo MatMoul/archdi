@@ -63,14 +63,14 @@ dependencies(){
   needinstall="false"
   clear
   echo "Checking internet and server connexion ..."
-  lastver=$lastverurl1
-version="2015.08.21.01.45.15"
+  lastverurl=$lastverurl1
+  lastversion=$(curl $lastverurl)
   if [ "$?" = "0" ] && [ "${#lastversion}" = "19" ]; then
     binurl=$binurl1
     liburl=$liburl1
   else
-    lastver=$lastverurl2
-version="2015.08.21.01.45.15"
+    lastverurl=$lastverurl2
+    lastversion=$(curl $lastverurl)
     if [ "$?" = "0" ] && [ "${#lastversion}" = "19" ]; then
       binurl=$binurl2
       liburl=$liburl2
