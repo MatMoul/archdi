@@ -64,14 +64,14 @@ dependencies(){
   clear
   echo "Checking internet and server connexion ..."
   lastverurl=$lastverurl1
-version="2015.08.21.02.00.22"
-  if [ "$?" = "0" ] && [ "${#lastversion}" = "19" ]; then
+  lastver=$(curl $lastverurl)
+  if [ "$?" = "0" ] && [ "${#lastver}" = "19" ]; then
     binurl=$binurl1
     liburl=$liburl1
   else
     lastverurl=$lastverurl2
-version="2015.08.21.02.00.22"
-    if [ "$?" = "0" ] && [ "${#lastversion}" = "19" ]; then
+    lastver=$(curl $lastverurl)
+    if [ "$?" = "0" ] && [ "${#lastver}" = "19" ]; then
       binurl=$binurl2
       liburl=$liburl2
     else
@@ -109,7 +109,7 @@ version="2015.08.21.02.00.22"
 
 chkupgrade(){
   if [ "$0" = "/usr/bin/archdi" ]; then
-    if [ ! "$version" = "$lastversion" ]; then
+    if [ ! "$version" = "$lastver" ]; then
       if (whiptail --backtitle "$apptitle" --yesno "New version found !\n\nInstall last version ?" 0 0) then
         cd /tmp
         wget $binurl
