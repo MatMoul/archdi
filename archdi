@@ -133,6 +133,7 @@ while (( "$#" )); do
       liburl1=https://raw.githubusercontent.com/MatMoul/archdi-pkg/$1/lib
       liburl2=https://raw.githubusercontent.com/MatMoul/archdi-pkg/$1/lib
       branchoption="$1"
+      apptitle="Version: $version - Branch: $1"
     ;;
   esac
   shift
