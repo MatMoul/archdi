@@ -120,6 +120,7 @@ chkupgrade(){
   fi
 }
 
+branchoption=""
 while (( "$#" )); do
   case $1 in
     -h|--help) help
@@ -127,6 +128,12 @@ while (( "$#" )); do
     -i|--install) install
                   exit 0;;
     --chroot) chrootoption="true";;
+    --branch)
+      shift
+      liburl1=https://raw.githubusercontent.com/MatMoul/archdi-pkg/$1/lib
+      liburl2=https://raw.githubusercontent.com/MatMoul/archdi-pkg/$1/lib
+      branchoption="$1"
+    ;;
   esac
   shift
 done
