@@ -12,8 +12,8 @@
 
 
 
-apptitle="Arch Linux Desktop Install (archdi) - Version: 2015.08.21.02.03.39 (GPLv3)"
-version="2015.08.21.02.03.39"
+apptitle="Arch Linux Desktop Install (archdi) - Version: 2015.08.29.23.30.04 (GPLv3)"
+version="2015.08.29.23.30.04"
 cachedir=~/.cache/archdi
 
 lastverurl1=http://archdi.sourceforge.net/version
@@ -53,7 +53,13 @@ run(){
   if [ "$chrootoption" = "true" ]; then
     ./lib --chroot
   else
-    ./lib --root
+    if [ "$branchoption" = "" ]; then
+      ./lib --root
+    else
+apptitle="Arch Linux Desktop Install (archdi) - Version: 2015.08.29.23.30.04 (GPLv3)"
+      sed -i "/baseurl=/c\baseurl=https://raw.githubusercontent.com/MatMoul/archdi-pkg/$branchoption" lib
+      ./lib --root
+    fi
   fi
   cd 2>/dev/null
   rm -R $cachedir 2>/dev/null
@@ -120,6 +126,7 @@ chkupgrade(){
   fi
 }
 
+branchoption=""
 while (( "$#" )); do
   case $1 in
     -h|--help) help
@@ -127,6 +134,13 @@ while (( "$#" )); do
     -i|--install) install
                   exit 0;;
     --chroot) chrootoption="true";;
+    --branch)
+      shift
+      liburl1=https://raw.githubusercontent.com/MatMoul/archdi-pkg/$1/lib
+      liburl2=https://raw.githubusercontent.com/MatMoul/archdi-pkg/$1/lib
+      branchoption="$1"
+apptitle="Arch Linux Desktop Install (archdi) - Version: 2015.08.29.23.30.04 (GPLv3)"
+    ;;
   esac
   shift
 done
