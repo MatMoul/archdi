@@ -53,7 +53,11 @@ run(){
   if [ "$chrootoption" = "true" ]; then
     ./lib --chroot
   else
-    ./lib --root
+    if [ "$branchoption" = "" ]; then
+      ./lib --root
+    else
+      ./lib --branch $branchoption --root
+    fi
   fi
   cd 2>/dev/null
   rm -R $cachedir 2>/dev/null
