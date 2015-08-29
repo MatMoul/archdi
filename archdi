@@ -12,8 +12,8 @@
 
 
 
-apptitle="Arch Linux Desktop Install (archdi) - Version: 2015.08.29.23.30.04 (GPLv3)"
-version="2015.08.29.23.30.04"
+apptitle="Arch Linux Desktop Install (archdi) - Version: 2015.08.29.23.44.51 (GPLv3)"
+version="2015.08.29.23.44.51"
 cachedir=~/.cache/archdi
 
 lastverurl1=http://archdi.sourceforge.net/version
@@ -139,7 +139,7 @@ while (( "$#" )); do
       liburl1=https://raw.githubusercontent.com/MatMoul/archdi-pkg/$1/lib
       liburl2=https://raw.githubusercontent.com/MatMoul/archdi-pkg/$1/lib
       branchoption="$1"
-apptitle="Arch Linux Desktop Install (archdi) - Version: 2015.08.29.23.30.04 (GPLv3)"
+apptitle="Arch Linux Desktop Install (archdi) - Version: 2015.08.29.23.44.51 (GPLv3)"
     ;;
   esac
   shift
