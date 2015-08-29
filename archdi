@@ -56,7 +56,7 @@ run(){
     if [ "$branchoption" = "" ]; then
       ./lib --root
     else
-apptitle="Arch Linux Desktop Install (archdi) - Version: 2015.08.29.23.30.04 (GPLv3)"
+      sed -i "/apptitle=/c\apptitle=\"Arch Linux Desktop Install (archdi) - Branch: $branchoption (GPLv3)\"" lib
       sed -i "/baseurl=/c\baseurl=https://raw.githubusercontent.com/MatMoul/archdi-pkg/$branchoption" lib
       ./lib --root
     fi
