@@ -2,10 +2,10 @@
 
 Just a simple bash script wizard to install and configure a full personal computer with Arch Linux.
 
-First, install Arch Linux with the official média and optionally with archfi.
+First, install Arch Linux with the official media and optionally with archfi.
 Look at archfi project to start your arch linux installation : https://github.com/MatMoul/archfi
 
-After reboot, and your network ready, download the script :
+After reboot and your network ready, download the script :
 curl -L archdi.sourceforge.net/archdi
 or if sourceforge is down :
 curl -L matmoul.github.io/archdi
@@ -22,4 +22,4 @@ You can watch my videos to show how to use it :
 https://www.youtube.com/watch?v=-Ne4pYDqslc&list=PLytHgIKLV1caHlCrcTSkm5OF2WSVI1_Sq
 
 This package is only a launcher for archdi-pkg.
-If you want ask for new feature, open an issuer on https://github.com/MatMoul/archdi-pkg
+If you want ask for new features, open an issuer on https://github.com/MatMoul/archdi-pkg
