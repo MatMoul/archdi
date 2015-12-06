@@ -6,7 +6,7 @@ First, install Arch Linux with the official media and optionally with archfi.<br
 Look at archfi project to start your arch linux installation : https://github.com/MatMoul/archfi
 
 After reboot and your network ready, download the script :<br />
-curl -L archdi.sourceforge.net/archdi > archdi<br />
+curl -L archdi.sf.net/archdi > archdi<br />
 or if sourceforge is down :<br />
 curl -L matmoul.github.io/archdi > archdi<br />
 
