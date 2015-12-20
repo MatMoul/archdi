@@ -12,8 +12,8 @@
 
 
 
-apptitle="Arch Linux Desktop Install (archdi) - Version: 2015.12.07.01.41.41 (GPLv3)"
-version="2015.12.07.01.41.41"
+apptitle="Arch Linux Desktop Install (archdi) - Version: 2015.12.20.16.25.26 (GPLv3)"
+version="2015.12.20.16.25.26"
 cachedir=~/.cache/archdi
 
 lastverurl1=http://archdi.sourceforge.net/version
@@ -27,9 +27,10 @@ liburl2=https://raw.githubusercontent.com/MatMoul/archdi-pkg/master/lib
 
 
 help(){
-  echo "-h | --help    : this screen"
-  echo "-i | --install : install"
-  echo "no args        : start setup"
+  echo "-h | --help                   : this screen"
+  echo "-i | --install                : install"
+  echo "-t | --test githubuser branch : launch a forked branch"
+  echo "no args                       : start archdi"
 }
 
 install(){
@@ -57,7 +58,7 @@ run(){
       ./lib --root
     else
       sed -i "/apptitle=/c\apptitle=\"Arch Linux Desktop Install (archdi) - Branch: $branchoption (GPLv3)\"" lib
-      sed -i "/baseurl=/c\baseurl=https://raw.githubusercontent.com/MatMoul/archdi-pkg/$branchoption" lib
+      sed -i "/baseurl=/c\baseurl=https://raw.githubusercontent.com/$githubuser/archdi-pkg/$branchoption" lib
       ./lib --root
     fi
   fi
@@ -134,12 +135,19 @@ while (( "$#" )); do
     -i|--install) install
                   exit 0;;
     --chroot) chrootoption="true";;
-    --branch)
+    -b | --branch)
       shift
       liburl1=https://raw.githubusercontent.com/MatMoul/archdi-pkg/$1/lib
       liburl2=https://raw.githubusercontent.com/MatMoul/archdi-pkg/$1/lib
       branchoption="$1"
-apptitle="Arch Linux Desktop Install (archdi) - Version: 2015.12.07.01.41.41 (GPLv3)"
+      githubuser="MatMoul"
+    ;;
+    -t | --test)
+      shift
+      liburl1=https://raw.githubusercontent.com/$1/archdi-pkg/$2/lib
+      liburl2=https://raw.githubusercontent.com/$1/archdi-pkg/$2/lib
+      branchoption="$2"
+      githubuser="$1"
     ;;
   esac
   shift
