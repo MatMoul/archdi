@@ -19,7 +19,7 @@ And then you can use archdi cmd.<br />
 With this, you can make your updates or install your packages later.
 
 You can watch my videos to show how to use it :<br />
-https://www.youtube.com/watch?v=-Ne4pYDqslc&list=PLytHgIKLV1caHlCrcTSkm5OF2WSVI1_Sq
+https://www.youtube.com/playlist?list=PLytHgIKLV1caHlCrcTSkm5OF2WSVI1_Sq
 
 This package is only a launcher for archdi-pkg.<br />
 If you want ask for new features, open an issue on https://github.com/MatMoul/archdi-pkg
