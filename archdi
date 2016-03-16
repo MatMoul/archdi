@@ -53,13 +53,22 @@ run(){
   chmod 755 lib 2>/dev/null
   if [ "$chrootoption" = "true" ]; then
     ./lib --chroot
+    if [ ! "$?" = "0" ]; then
+      archdi --branch master
+    fi
   else
     if [ "$branchoption" = "" ]; then
       ./lib --root
+      if [ ! "$?" = "0" ]; then
+        archdi --branch master
+      fi
     else
       sed -i "/apptitle=/c\apptitle=\"Arch Linux Desktop Install (archdi) - Branch: $branchoption (GPLv3)\"" lib
       sed -i "/baseurl=/c\baseurl=https://raw.githubusercontent.com/$githubuser/archdi-pkg/$branchoption" lib
       ./lib --root
+      if [ ! "$?" = "0" ]; then
+        archdi --branch master
+      fi
     fi
   fi
   cd 2>/dev/null
