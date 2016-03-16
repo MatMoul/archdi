@@ -12,8 +12,8 @@
 
 
 
-apptitle="Arch Linux Desktop Install (archdi) - Version: 2016.02.25.03.26.12 (GPLv3)"
-version="2016.02.25.03.26.12"
+apptitle="Arch Linux Desktop Install (archdi) - Version: 2016.03.16.21.25.12 (GPLv3)"
+version="2016.03.16.21.25.12"
 cachedir=~/.cache/archdi
 
 lastverurl1=http://archdi.sourceforge.net/version
