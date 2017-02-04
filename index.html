@@ -12,8 +12,8 @@
 
 
 
-apptitle="Arch Linux Desktop Install (archdi) - Version: 2016.12.21.00.48.07 (GPLv3)"
-version="2016.12.21.00.48.07"
+apptitle="Arch Linux Desktop Install (archdi) - Version: 2017.02.04.22.19.27 (GPLv3)"
+version="2017.02.04.22.19.27"
 cachedir=~/.cache/archdi
 
 lastverurl1=http://archdi.sourceforge.net/version
@@ -24,6 +24,9 @@ binurl2=matmoul.github.io/archdi
 
 liburl1=http://archdi.sourceforge.net/archdi-lib
 liburl2=https://raw.githubusercontent.com/MatMoul/archdi-pkg/master/lib
+
+pkgurl1=http://archdi.sourceforge.net/archdi-pkg
+pkgurl2=https://raw.githubusercontent.com/MatMoul/archdi-pkg/master/pkg.tar
 
 
 help(){
@@ -49,7 +52,16 @@ run(){
   rm -R $cachedir 2>/dev/null
   mkdir -p $cachedir 2>/dev/null
   cd $cachedir 2>/dev/null
-  wget -O lib $liburl 2>/dev/null
+  
+  if [ "$pkgurl" == "" ]; then
+    wget -O lib $liburl 2>/dev/null
+  else
+    echo ""
+    echo "Downloading packages..."
+    wget -O pkg.tar $pkgurl 2>/dev/null
+    tar -xf pkg.tar
+  fi
+  
   chmod 755 lib 2>/dev/null
   if [ "$chrootoption" = "true" ]; then
     ./lib --chroot
@@ -84,12 +96,14 @@ dependencies(){
   if [ "$?" = "0" ] && [ "${#lastver}" = "19" ]; then
     binurl=$binurl1
     liburl=$liburl1
+    pkgurl=$pkgurl1
   else
     lastverurl=$lastverurl2
     lastver=$(curl $lastverurl)
     if [ "$?" = "0" ] && [ "${#lastver}" = "19" ]; then
       binurl=$binurl2
       liburl=$liburl2
+      pkgurl=$pkgurl2
     else
       exit 1
     fi
@@ -148,6 +162,8 @@ while (( "$#" )); do
       shift
       liburl1=https://raw.githubusercontent.com/MatMoul/archdi-pkg/$1/lib
       liburl2=https://raw.githubusercontent.com/MatMoul/archdi-pkg/$1/lib
+      pkgurl1=""
+      pkgurl2=""
       branchoption="$1"
       githubuser="MatMoul"
     ;;
@@ -155,6 +171,8 @@ while (( "$#" )); do
       shift
       liburl1=https://raw.githubusercontent.com/$1/archdi-pkg/$2/lib
       liburl2=https://raw.githubusercontent.com/$1/archdi-pkg/$2/lib
+      pkgurl1=""
+      pkgurl2=""
       branchoption="$2"
       githubuser="$1"
     ;;
