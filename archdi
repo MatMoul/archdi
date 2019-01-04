@@ -32,6 +32,7 @@ pkgurl2=https://raw.githubusercontent.com/MatMoul/archdi-pkg/master/pkg.tar
 help(){
   echo "-h | --help                   : this screen"
   echo "-i | --install                : install"
+  echo "-l | --local dir              : run local archdi-pkg dir"
   echo "-t | --test githubuser branch : launch a forked branch"
   echo "no args                       : start archdi"
 }
@@ -53,13 +54,17 @@ run(){
   mkdir -p $cachedir 2>/dev/null
   cd $cachedir 2>/dev/null
   
-  if [ "$pkgurl" == "" ]; then
-    wget -O lib $liburl 2>/dev/null
+  if [ ! "$pkgdir" = "" ]; then
+    cp -r $pkgdir/* . >/dev/null
   else
-    echo ""
-    echo "Downloading packages..."
-    wget -O pkg.tar $pkgurl 2>/dev/null
-    tar -xf pkg.tar
+    if [ "$pkgurl" == "" ]; then
+      wget -O lib $liburl 2>/dev/null
+    else
+      echo ""
+      echo "Downloading packages..."
+      wget -O pkg.tar $pkgurl 2>/dev/null
+      tar -xf pkg.tar
+    fi
   fi
   
   chmod 755 lib 2>/dev/null
@@ -69,20 +74,31 @@ run(){
       archdi --branch master
     fi
   else
-    if [ "$branchoption" = "" ]; then
+    if [ ! "$pkgdir" = "" ]; then
+      sed -i "/apptitle=/c\apptitle=\"Arch Linux Desktop Install (archdi) - local: $pkgdir (GPLv3)\"" lib
+      sed -i "/baseurl=/c\baseurl=$pkgdir" lib
       ./lib --root
       if [ ! "$?" = "0" ]; then
         archdi --branch master
       fi
     else
-      sed -i "/apptitle=/c\apptitle=\"Arch Linux Desktop Install (archdi) - Branch: $branchoption (GPLv3)\"" lib
-      sed -i "/baseurl=/c\baseurl=https://raw.githubusercontent.com/$githubuser/archdi-pkg/$branchoption" lib
-      ./lib --root
-      if [ ! "$?" = "0" ]; then
-        archdi --branch master
+      if [ "$branchoption" = "" ]; then
+        ./lib --root
+        if [ ! "$?" = "0" ]; then
+          archdi --branch master
+        fi
+      else
+        sed -i "/apptitle=/c\apptitle=\"Arch Linux Desktop Install (archdi) - Branch: $branchoption (GPLv3)\"" lib
+        sed -i "/baseurl=/c\baseurl=https://raw.githubusercontent.com/$githubuser/archdi-pkg/$branchoption" lib
+        ./lib --root
+        if [ ! "$?" = "0" ]; then
+          archdi --branch master
+        fi
       fi
     fi
   fi
+  
+  
   cd 2>/dev/null
   rm -R $cachedir 2>/dev/null
 }
@@ -166,6 +182,12 @@ while (( "$#" )); do
       pkgurl2=""
       branchoption="$1"
       githubuser="MatMoul"
+    ;;
+    -l | --local)
+      shift
+      apptitle="Arch Linux Desktop Install (archdi) - Version: local ($1)"
+      version="local ($1)"
+      pkgdir="$1"
     ;;
     -t | --test)
       shift
