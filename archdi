@@ -18,15 +18,19 @@ cachedir=~/.cache/archdi
 
 lastverurl1=http://archdi.sourceforge.net/version
 lastverurl2=https://raw.githubusercontent.com/MatMoul/archdi/master/version
+lastverurl3=https://cdn.jsdelivr.net/gh/MatMoul/archdi@master/version
 
 binurl1=archdi.sourceforge.net/archdi
 binurl2=matmoul.github.io/archdi
+binurl3=https://cdn.jsdelivr.net/gh/MatMoul/archdi@master/archdi
 
 liburl1=http://archdi.sourceforge.net/archdi-lib
 liburl2=https://raw.githubusercontent.com/MatMoul/archdi-pkg/master/lib
+liburl3=https://cdn.jsdelivr.net/gh/MatMoul/archdi-pkg@master/lib
 
 pkgurl1=http://archdi.sourceforge.net/archdi-pkg
 pkgurl2=https://raw.githubusercontent.com/MatMoul/archdi-pkg/master/pkg.tar
+pkgurl3=https://cdn.jsdelivr.net/gh/MatMoul/archdi-pkg@master/pkg.tar
 
 
 help(){
@@ -121,7 +125,15 @@ dependencies(){
       liburl=$liburl2
       pkgurl=$pkgurl2
     else
-      exit 1
+      lastverurl=$lastverurl3
+      lastver=$(curl $lastverurl)
+      if [ "$?" = "0" ] && [ "${#lastver}" = "19" ]; then
+        binurl=$binurl3
+        liburl=$liburl3
+        pkgurl=$pkgurl3
+      else
+        exit 1
+      fi
     fi
   fi
   echo ""
@@ -146,7 +158,7 @@ dependencies(){
     case "$choice" in 
       n|N ) exit 1;;
     esac
-    pacman -S --needed wget libnewt
+    pacman -S --needed --noconfirm wget libnewt
   fi
   echo ""
   echo "Checking bin version..."
