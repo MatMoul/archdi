@@ -5,16 +5,22 @@ Just a simple bash script wizard to install and configure a full personal comput
 First, install Arch Linux with the official media and optionally with archfi.<br />
 Look at archfi project to start your arch linux installation : https://github.com/MatMoul/archfi
 
-After reboot and your network ready, download the script :<br />
-curl -L archdi.sf.net/archdi > archdi<br />
-or if sourceforge is down :<br />
-curl -L matmoul.github.io/archdi > archdi<br />
+After reboot and your network ready, download the script:
 
-And run the script :<br />
-sh archdi
+    curl -L archdi.sf.net/archdi > archdi
 
-Or you can install it on your system with<br />
-sh archdi -i<br />
+or if sourceforge is down:
+
+    curl -L matmoul.github.io/archdi > archdi
+
+And run the script:
+
+    sh archdi
+
+Or you can install it on your system with:
+
+    sh archdi -i
+    
 And then you can use archdi cmd.<br />
 With this, you can make your updates or install your packages later.
 
