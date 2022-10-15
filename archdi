@@ -42,13 +42,14 @@ install(){
   echo "Install $apptitle ..."
   echo ""
   chmod 755 $0 2>/dev/null
-  mv $0 /usr/local/bin/archdi 2>/dev/null
+  if [[ -f "/usr/bin/archfi" ]]; then
+    mv $0 /usr/bin/archdi 2>/dev/null
+  else
+    mv $0 /usr/local/bin/archdi 2>/dev/null
+  fi
   echo ""
   echo "$apptitle is installed."
   echo "type archdi to start."
-  if [[ -f "/usr/bin/archfi" ]]; then
-    rm /usr/bin/archfi
-  fi
 }
 
 run(){
