@@ -12,21 +12,25 @@
 
 
 
-apptitle="Arch Linux Desktop Install (archdi) - Version: 2022.10.16.00.40.42 (GPLv3)"
-version="2022.10.16.00.40.42"
+apptitle="Arch Linux Desktop Install (archdi) - Version: 2022.10.16.00.52.40 (GPLv3)"
+version="2022.10.16.00.52.40"
 cachedir=~/.cache/archdi
 
 lastverurl1=http://archdi.sourceforge.net/version
 lastverurl2=https://raw.githubusercontent.com/MatMoul/archdi/master/version
+lastverurl3=https://cdn.jsdelivr.net/gh/MatMoul/archdi@master/version
 
 binurl1=archdi.sourceforge.net/archdi
 binurl2=matmoul.github.io/archdi
+binurl3=https://cdn.jsdelivr.net/gh/MatMoul/archdi@master/archdi
 
 liburl1=http://archdi.sourceforge.net/archdi-lib
 liburl2=https://raw.githubusercontent.com/MatMoul/archdi-pkg/master/lib
+liburl3=https://cdn.jsdelivr.net/gh/MatMoul/archdi-pkg@master/lib
 
 pkgurl1=http://archdi.sourceforge.net/archdi-pkg
 pkgurl2=https://raw.githubusercontent.com/MatMoul/archdi-pkg/master/pkg.tar
+pkgurl3=https://cdn.jsdelivr.net/gh/MatMoul/archdi-pkg@master/pkg.tar
 
 
 help(){
@@ -61,11 +65,11 @@ run(){
     cp -r $pkgdir/* . >/dev/null
   else
     if [ "$pkgurl" == "" ]; then
-      wget -O lib $liburl 2>/dev/null
+      curl -L $liburl > lib 
     else
       echo ""
       echo "Downloading packages..."
-      wget -O pkg.tar $pkgurl 2>/dev/null
+      curl -L $pkgurl > pkg.tar
       tar -xf pkg.tar
     fi
   fi
@@ -124,7 +128,15 @@ dependencies(){
       liburl=$liburl2
       pkgurl=$pkgurl2
     else
-      exit 1
+      lastverurl=$lastverurl3
+      lastver=$(curl $lastverurl)
+      if [ "$?" = "0" ] && [ "${#lastver}" = "19" ]; then
+        binurl=$binurl3
+        liburl=$liburl3
+        pkgurl=$pkgurl3
+      else
+        exit 1
+      fi
     fi
   fi
   echo ""
@@ -149,7 +161,7 @@ dependencies(){
     case "$choice" in 
       n|N ) exit 1;;
     esac
-    pacman -S --needed wget libnewt
+    pacman -S --needed --noconfirm wget libnewt
   fi
   echo ""
   echo "Checking bin version..."
@@ -189,7 +201,7 @@ while (( "$#" )); do
     -l | --local)
       shift
       apptitle="Arch Linux Desktop Install (archdi) - Version: local ($1)"
-version="2022.10.16.00.40.42"
+version="2022.10.16.00.52.40"
       pkgdir="$1"
     ;;
     -t | --test)
