@@ -61,11 +61,11 @@ run(){
     cp -r $pkgdir/* . >/dev/null
   else
     if [ "$pkgurl" == "" ]; then
-      wget -O lib $liburl 2>/dev/null
+      curl -L $liburl > lib 
     else
       echo ""
       echo "Downloading packages..."
-      wget -O pkg.tar $pkgurl 2>/dev/null
+      curl -L $pkgurl > pkg.tar
       tar -xf pkg.tar
     fi
   fi
