@@ -12,8 +12,8 @@
 
 
 
-apptitle="Arch Linux Desktop Install (archdi) - Version: 2022.10.16.00.03.46 (GPLv3)"
-version="2022.10.16.00.03.46"
+apptitle="Arch Linux Desktop Install (archdi) - Version: 2022.10.16.00.14.46 (GPLv3)"
+version="2022.10.16.00.14.46"
 cachedir=~/.cache/archdi
 
 lastverurl1=http://archdi.sourceforge.net/version
@@ -160,6 +160,9 @@ chkupgrade(){
         cd /tmp
         wget $binurl
         sh archdi -i
+        if test -f "/usr/bin/archfi"; then
+          rm /usr/bin/archfi
+        fi
         exit 0
       fi
     fi
@@ -186,7 +189,7 @@ while (( "$#" )); do
     -l | --local)
       shift
       apptitle="Arch Linux Desktop Install (archdi) - Version: local ($1)"
-version="2022.10.16.00.03.46"
+version="2022.10.16.00.14.46"
       pkgdir="$1"
     ;;
     -t | --test)
