@@ -46,6 +46,9 @@ install(){
   echo ""
   echo "$apptitle is installed."
   echo "type archdi to start."
+  if [[ -f "/usr/bin/archfi" ]]; then
+    rm /usr/bin/archfi
+  fi
 }
 
 run(){
@@ -160,9 +163,6 @@ chkupgrade(){
         cd /tmp
         wget $binurl
         sh archdi -i
-        if [[ -f "/usr/bin/archfi" ]]; then
-          rm /usr/bin/archfi
-        fi
         exit 0
       fi
     fi
