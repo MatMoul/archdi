@@ -12,8 +12,8 @@
 
 
 
-apptitle="Arch Linux Desktop Install (archdi) - Version: 2022.10.16.00.25.55 (GPLv3)"
-version="2022.10.16.00.25.55"
+apptitle="Arch Linux Desktop Install (archdi) - Version: 2022.10.16.00.30.38 (GPLv3)"
+version="2022.10.16.00.30.38"
 cachedir=~/.cache/archdi
 
 lastverurl1=http://archdi.sourceforge.net/version
@@ -190,7 +190,7 @@ while (( "$#" )); do
     -l | --local)
       shift
       apptitle="Arch Linux Desktop Install (archdi) - Version: local ($1)"
-version="2022.10.16.00.25.55"
+version="2022.10.16.00.30.38"
       pkgdir="$1"
     ;;
     -t | --test)
