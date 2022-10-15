@@ -160,7 +160,7 @@ chkupgrade(){
         cd /tmp
         wget $binurl
         sh archdi -i
-        if test -f "/usr/bin/archfi"; then
+        if [[ -f "/usr/bin/archfi" ]]; then
           rm /usr/bin/archfi
         fi
         exit 0
