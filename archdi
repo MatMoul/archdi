@@ -42,14 +42,13 @@ install(){
   echo "Install $apptitle ..."
   echo ""
   chmod 755 $0 2>/dev/null
-  if [[ -f "/usr/bin/archdi" ]]; then
-    mv $0 /usr/bin/archdi 2>/dev/null
-  else
-    mv $0 /usr/local/bin/archdi 2>/dev/null
-  fi
+  mv $0 /usr/local/bin/archdi 2>/dev/null
   echo ""
   echo "$apptitle is installed."
   echo "type archdi to start."
+  if [[ -f "/usr/bin/archdi" ]]; then
+    rm /usr/bin/archdi 2>/dev/null
+  fi
 }
 
 run(){
@@ -158,7 +157,7 @@ dependencies(){
 }
 
 chkupgrade(){
-  if [ "$0" = "/usr/bin/archdi" ]; then
+  if [[ "$0" = "/usr/local/bin/archdi" ]]; then
     if [ ! "$version" = "$lastver" ]; then
       if (whiptail --backtitle "$apptitle" --yesno "New version found !\n\nInstall last version ?" 0 0) then
         cd /tmp
