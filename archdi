@@ -52,6 +52,7 @@ install(){
   echo "type archdi to start."
   if [[ -f "/usr/bin/archdi" ]]; then
     rm /usr/bin/archdi 2>/dev/null
+    hash -r
   fi
 }
 
