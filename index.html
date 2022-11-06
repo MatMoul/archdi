@@ -12,8 +12,8 @@
 
 
 
-apptitle="Arch Linux Desktop Install (archdi) - Version: 2022.11.06.02.50.26 (GPLv3)"
-version="2022.11.06.02.50.26"
+apptitle="Arch Linux Desktop Install (archdi) - Version: 2022.11.06.02.57.54 (GPLv3)"
+version="2022.11.06.02.57.54"
 cachedir=~/.cache/archdi
 
 lastverurl1=http://archdi.sourceforge.net/version
@@ -52,7 +52,7 @@ install(){
   echo "type archdi to start."
   if [[ -f "/usr/bin/archdi" ]]; then
     rm /usr/bin/archdi 2>/dev/null
-    hash -r
+    echo "If archdi doesn't start after update, run 'hash -r'"
   fi
 }
 
@@ -202,7 +202,7 @@ while (( "$#" )); do
     -l | --local)
       shift
       apptitle="Arch Linux Desktop Install (archdi) - Version: local ($1)"
-version="2022.11.06.02.50.26"
+version="2022.11.06.02.57.54"
       pkgdir="$1"
     ;;
     -t | --test)
