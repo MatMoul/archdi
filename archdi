@@ -143,16 +143,10 @@ dependencies(){
   echo ""
   echo "Checking $apptitle dependencies :"
   echo ""
-  if [ -e /usr/bin/wget ]; then
-    echo "wget : installed"
+  if [ -e /usr/bin/dialog ]; then
+    echo "dialog : installed"
   else
-    echo "wget : not installed"
-    needinstall="true"
-  fi
-  if [ -e /usr/bin/whiptail ]; then
-    echo "libnewt : installed"
-  else
-    echo "libnewt : not installed"
+    echo "dialog : not installed"
     needinstall="true"
   fi
   if [ "$needinstall" = "true" ]; then
@@ -162,7 +156,7 @@ dependencies(){
     case "$choice" in 
       n|N ) exit 1;;
     esac
-    pacman -S --needed --noconfirm wget libnewt
+    pacman -S --needed --noconfirm dialog
   fi
   echo ""
   echo "Checking bin version..."
@@ -174,7 +168,7 @@ chkupgrade(){
     if [ ! "$version" = "$lastver" ]; then
       if (whiptail --backtitle "$apptitle" --yesno "New version found !\n\nInstall last version ?" 0 0) then
         cd /tmp
-        wget $binurl
+        curl -LO $binurl
         sh archdi -i
         exit 0
       fi
